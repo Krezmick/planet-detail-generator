@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<body>
+<br>AC's Planet generator 2019</br><p id="type"></p><p id="age"></p><p id="diameter"></p><p id="compDiameter"></p><p id="meanDensity"></p><p id="pVolume"></p><p id="compVol"></p><p id="mass" ></p><p id="mass2" ></p><p id="temp" ></p><p id="pAtmosphere" ></p><p id="atVal01" ></p><p id="atVal02" ></p><p id="atVal03" ></p><p id="atVal04" ></p><p id="atVal05" ></p><p id="atVal06" ></p><p id="atVal07" ></p><p id="atVal08" ></p><p id="atVal09" ></p><p id="atVal10" ></p><p id="atVal11" ></p>
+<!-- 1 = terrestrial default, 2 = gas giant, 3 = Sub earth, 4 = Super earth, 5 = Super Jupiter -->
+<script>//Planet type select
+pType = Math.floor(Math.random() * 5) + 1;
+if (pType == 1) {planet = "Terrestrial";}else if (pType == 2) {planet = "Gas Giant";}else if (pType == 3) {planet = "Sub Earth";}else if (pType == 4) {planet = "Super Earth";}else if (pType == 5) {planet = "Super Jupiter / Brown Dwarf";}document.getElementById("type").innerHTML = "Planet Type: " + planet;
+</script>
+
+<script>	//planet age generation
+var pAgeMin = 0.01;
+var pAgeMax = 10.0;
+function planetAge(min, max) {
+  return Math.abs(Math.random() * (max - min + 1.0) ) + min;
+}
+document.getElementById("age").innerHTML = "Planet Age: " + planetAge(pAgeMin,pAgeMax).toFixed(4) + " -Billion years old";
+</script>
+
+<script> //Generate the planet
+var earthMass = 5.97237e24; // (kg) 
+var earthVolume = 1.08321e12;
+var earthDiameter = 12742;
+var jupVol = 1.4313e15
+var jupMass = 1.8982e27
+var fakeDens; //the planet mean density
+var pDiameter; //the total diameter
+var pVol = pVolume; //the total volume
+var meanTemp;
+var tempMin = -265.0;
+var tempMax = 500.0;
+var tooCold = " -Too far form host star.";
+var tooHot = " -Too close to host star.";
+var goldielocks = " -Within the habitable zone.";
+
+//comparative values
+var compJupVol; 
+var compJupMass; 
+var compMass; 
+var compVol;
+var compDiameter;
+
+//Atmosphere
+const atmosphere = 100; //total % of planet atmosphere for min max
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+var atmosTotal; //the sum of generated atmosphere values
+
+//Elements
+var oxMin = 0.01;	//oxygen O2
+var oxMax = 90.0;
+var nitroMin = 0.01; //nitrogen N2
+var nitroMax = 95.0;
+var cdMin = 0.01; //carbon dioxide
+var cdMax = 99.0;
+var argMin = 0.001; //argon
+var argMax = 15.0;
+var hydroMin = 0.0; //hydrogen
+var hydroMax = 1.0;
+var heMin = 0.0001; //helium
+var heMax = 0.5;
+var neMin; //neon
+var neMax;//usually found on planets closer to sun with thin or no atmospheres
+var cmMin; //carbon monoxide
+var cmMax;
+var sMin; //sulfer
+var sMax;
+var saltMin; //Sodium
+var saltMax;
+var methMin = 0.0001; //methane
+var methMax = 1.5;
+var poMin; //potassium
+var poMax;
+ 
+function randomVal(min, max) { //random value generator
+  return Math.abs(Math.random() * (max - min + 1) ) + min;
+}
+meanTemp = randomVal(tempMin,tempMax)
+
+if (pType == 1) { 													//terrestial
+fakeDens = Math.abs(Math.random() * (2) + 4.5).toFixed(3);				//calc Density
+pDiameter = Math.abs(Math.random() * (14000) + 12000).toFixed(3);		//calc Diameter
+compDiameter = (pDiameter / earthDiameter).toFixed(3);
+if (meanTemp > 65) {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + tooHot;
+cdMin = 25.0; cdMax = 99.5; oxMin = 0.01; oxMax = 20.5; nitroMin = 0.1; nitroMax = 95.0; argMin = 0.01; argMax = 0.9; hydroMin = 0.0; hydroMax = 0.5;
+heMin = 0.3; heMax = 10.0; neMin = 0.0001; neMax = 0.001; sMin = 0.0001; sMax = 0.8; saltMin = 0.0001; saltMax = 30.0; poMin = 0.0001; poMax = 0.8; methMin = 0.0001; methMax = 0.05;
+}else if (meanTemp <= 0) {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + tooCold;
+cdMin = 0.0001; cdMax = 67.0; oxMin = 0.01; oxMax = 30.9; nitroMin = 0.01; nitroMax = 92.0; argMin = 0.0001; argMax = 1.9; hydroMin = 0.0; hydroMax = 0.0;
+heMin = 0.0; heMax = 1.0; neMin = 0; neMax = 0; sMin = 0; sMax = 0; saltMin = 0; saltMax = 0; poMin = 0; poMax = 0; methMin = 0.0001; methMax = 0.5;
+}else {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + goldielocks;
+oxMin = 0.001; oxMax = 95.0; nitroMin = 0.001; nitroMax = 95.0; cdMin = 0.0001; cdMax = 99.0; argMin = 0.0001; argMax = 15.0; hydroMin = 0.00001; hydroMax = 0.00009;
+heMin = 0.0001; heMax = 1.0; neMin = 0.0001; neMax = 0.003; sMin = 0.00000; sMax = 0.0000; saltMin = 0.000000; saltMax = 0.000000; poMin = 0.00000; poMax = 0.00000; methMin = 0.0001; methMax = 0.005;
+}
+}else if (pType == 2) {		//******************************************************gas giant
+fakeDens = Math.abs(Math.random() * (1) + 2.5).toFixed(3);
+pDiameter = Math.abs(Math.random() * (120000) + 48000).toFixed(3);
+compDiameter = (pDiameter / earthDiameter).toFixed(3);
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C ";
+oxMin = 0.0001; oxMax = 0.4; nitroMin = 0; nitroMax = 0; cdMin = 0; cdMax = 0; argMin = 0; argMax = 0; hydroMin = 75; hydroMax = 99.5; heMin = 0.9; heMax = 20.0;
+neMin = 0.0001; neMax = 0.003; sMin = 0; sMax = 0; saltMin = 0; saltMax = 3.000000; poMin = 0.0000001; poMax = 0.008; methMin = 0.000001; methMax = 0.9;
+}else if (pType == 3) { 	//*******************************************************sub earth
+fakeDens = Math.abs(Math.random() * (1) + 4.2).toFixed(3);
+pDiameter = Math.abs(Math.random() * (10000) + 3000).toFixed(3);
+compDiameter = (pDiameter / earthDiameter).toFixed(3);
+if (meanTemp > 65) {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + tooHot;
+cdMin = 25.0; cdMax = 99.5; oxMin = 0.01; oxMax = 20.5; nitroMin = 0.1; nitroMax = 95.0; argMin = 0.01; argMax = 0.9; hydroMin = 0.0; hydroMax = 0.5;
+heMin = 0.3; heMax = 10.0; neMin = 0.0001; neMax = 0.001; sMin = 0.0001; sMax = 0.8; saltMin = 0.0001; saltMax = 30.0; poMin = 0.0001; poMax = 0.8; methMin = 0.0001; methMax = 0.05;
+}else if (meanTemp <= 0) {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + tooCold;
+cdMin = 0.0001; cdMax = 67.0; oxMin = 0.01; oxMax = 30.9; nitroMin = 0.01; nitroMax = 92.0; argMin = 0.0001; argMax = 1.9; hydroMin = 0.0; hydroMax = 0.0;
+heMin = 0.0; heMax = 1.0; neMin = 0; neMax = 0; sMin = 0; sMax = 0; saltMin = 0; saltMax = 0; poMin = 0; poMax = 0; methMin = 0.0001; methMax = 0.5;
+}else {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + goldielocks;
+oxMin = 0.001; oxMax = 95.0; nitroMin = 0.001; nitroMax = 95.0; cdMin = 0.0001; cdMax = 99.0; argMin = 0.0001; argMax = 15.0; hydroMin = 0.00001; hydroMax = 0.00009;
+heMin = 0.0001; heMax = 1.0; neMin = 0.0001; neMax = 0.003; sMin = 0.00000; sMax = 0.0000; saltMin = 0.000000; saltMax = 0.000000; poMin = 0.00000; poMax = 0.00000; methMin = 0.0001; methMax = 0.005;
+}
+}else if (pType == 4) {		//****************************************************super earth
+fakeDens = Math.abs(Math.random() * (6.5) + 5.8).toFixed(3);
+pDiameter = Math.abs(Math.random() * (25000) + 14000).toFixed(3);
+compDiameter = (pDiameter / earthDiameter).toFixed(3);
+if (meanTemp > 65) {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + tooHot;
+cdMin = 25.0; cdMax = 99.5; oxMin = 0.01; oxMax = 20.5; nitroMin = 0.1; nitroMax = 95.0; argMin = 0.01; argMax = 0.9; hydroMin = 0.0; hydroMax = 0.5;
+heMin = 0.3; heMax = 10.0; neMin = 0.0001; neMax = 0.001; sMin = 0.0001; sMax = 0.8; saltMin = 0.0001; saltMax = 30.0; poMin = 0.0001; poMax = 0.8; methMin = 0.0001; methMax = 0.05;
+}else if (meanTemp <= 0) {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + tooCold;
+cdMin = 0.0001; cdMax = 67.0; oxMin = 0.01; oxMax = 30.9; nitroMin = 0.01; nitroMax = 92.0; argMin = 0.0001; argMax = 1.9; hydroMin = 0.0; hydroMax = 0.0;
+heMin = 0.0; heMax = 1.0; neMin = 0; neMax = 0; sMin = 0; sMax = 0; saltMin = 0; saltMax = 0; poMin = 0; poMax = 0; methMin = 0.0001; methMax = 0.5;
+}else {
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C " + goldielocks;
+oxMin = 0.001; oxMax = 95.0; nitroMin = 0.001; nitroMax = 95.0; cdMin = 0.0001; cdMax = 99.0; argMin = 0.0001; argMax = 15.0; hydroMin = 0.00001; hydroMax = 0.00009;
+heMin = 0.0001; heMax = 1.0; neMin = 0.0001; neMax = 0.003; sMin = 0.00000; sMax = 0.0000; saltMin = 0.000000; saltMax = 0.000000; poMin = 0.00000; poMax = 0.00000; methMin = 0.0001; methMax = 0.005;
+}
+}else if (pType == 5) { 	//**************************************************super jupiter
+fakeDens = Math.abs(Math.random() * (7.5)  + 0.5).toFixed(3);
+pDiameter = Math.abs(Math.random() * (1000000) + 300000).toFixed(3);
+compDiameter = (pDiameter / earthDiameter).toFixed(3);
+document.getElementById("temp").innerHTML = "Planet Tempurature: " + meanTemp.toFixed(1) + " °C ";
+oxMin = 0.0001; oxMax = 0.4; nitroMin = 0; nitroMax = 0; cdMin = 0; cdMax = 0; argMin = 0; argMax = 0; hydroMin = 75; hydroMax = 99.5; heMin = 0.9; heMax = 20.0;
+neMin = 0.0001; neMax = 0.003; sMin = 0; sMax = 0; saltMin = 0; saltMax = 3.000000; poMin = 0.0000001; poMax = 0.008; methMin = 0.000001; methMax = 0.9;
+}
+
+var volEquation = pDiameter / 2; //Volume calculation equation 
+var pVolume = Math.pow(volEquation, 3) * 4.18667; //final part of volume calculation
+var planetMass = fakeDens * pVolume; //Mass calculation equation  * 100000000000
+var realDens = planetMass / pVolume;
+
+var o2Value = randomVal(oxMax, oxMin) + oxMin;
+var n2Value = randomVal(nitroMax, nitroMin) + nitroMin;
+var cdValue = randomVal(cdMax, cdMin) + cdMin;
+var argValue = randomVal(argMax, argMin) + argMin;
+var hydroValue = randomVal(hydroMax, hydroMin) + hydroMin;
+var heValue = randomVal(heMax, heMin) + heMin;
+var neValue = randomVal(neMax, neMin) + neMin;
+var sValue = randomVal(sMax, sMin) + sMin;
+var saltValue = randomVal(saltMax, saltMin) + saltMin;
+var poValue = randomVal(poMax, poMin) + poMin;
+var methValue = randomVal(methMax, methMin) + methMin;
+
+atmosTotal = [o2Value, n2Value, cdValue, argValue, hydroValue, heValue, neValue, sValue, saltValue, poValue, methValue].reduce(reducer);
+
+o2Value = o2Value / atmosTotal * atmosphere;
+n2Value = n2Value / atmosTotal * atmosphere;
+cdValue = cdValue / atmosTotal * atmosphere;
+argValue = argValue / atmosTotal * atmosphere;
+hydroValue = hydroValue / atmosTotal * atmosphere;
+heValue = heValue / atmosTotal * atmosphere;
+neValue = neValue / atmosTotal * atmosphere;
+sValue = sValue / atmosTotal * atmosphere;
+saltValue = saltValue / atmosTotal * atmosphere;
+poValue = poValue / atmosTotal * atmosphere;
+methValue = methValue / atmosTotal * atmosphere;
+
+if (pType == 1) { 	//terra
+planetMass = fakeDens * pVolume * 10e10;
+}else if (pType == 2) { //gas giant
+planetMass = fakeDens * pVolume * 10e10;
+}else if (pType == 3) { //sub earth
+planetMass = fakeDens * pVolume * 10e10;
+}else if (pType == 4) { //super earth
+planetMass = fakeDens * pVolume * 10e10;
+}else if (pType == 5) { //super jup
+planetMass = fakeDens * pVolume * 10e10;
+}
+
+compVol = (pVolume / earthVolume).toFixed(3);
+compMass = (planetMass / earthMass).toFixed(4);
+compJupVol = (pVolume / jupVol).toFixed(2);
+compJupMass = (planetMass / jupMass).toFixed(2);
+
+document.getElementById("diameter").innerHTML = "Diameter: " + pDiameter + " km";
+document.getElementById("compDiameter").innerHTML = compDiameter + " x Earth diameter";
+document.getElementById("meanDensity").innerHTML = "Mean Density: " + realDens.toFixed(3) + " g/cm^3";
+document.getElementById("pVolume").innerHTML = "Volume: " + pVolume.toExponential(5) + " km^3";
+if (pType == 5) { //super jup
+document.getElementById("compVol").innerHTML = compJupVol + " x Jupiter volume.";
+}else { 
+document.getElementById("compVol").innerHTML = compVol + " x Earth volume.";
+}
+document.getElementById("mass").innerHTML = "Planet Mass: " + planetMass.toExponential(5) + " kg";
+if (pType == 5) { //super jup
+document.getElementById("mass2").innerHTML = compJupMass + " Jupiters.";
+}else {
+document.getElementById("mass2").innerHTML = compMass + " Earths";
+}
+document.getElementById("pAtmosphere").innerHTML = "Planet Atmosphere by Volume:";
+document.getElementById("atVal01").innerHTML = "Oxygen: " + o2Value.toFixed(5) + "%";
+document.getElementById("atVal02").innerHTML = "Nitrogen: " + n2Value.toFixed(5) + "%";
+document.getElementById("atVal03").innerHTML = "Hydrogen: " + hydroValue.toFixed(6) + "%";
+document.getElementById("atVal04").innerHTML = "Carbon Dioxide: " + cdValue.toFixed(5) + "%";
+document.getElementById("atVal05").innerHTML = "Argon: " + argValue.toFixed(5) + "%";
+document.getElementById("atVal06").innerHTML = "Helium: " + heValue.toFixed(5) + "%";
+if (poValue > 0.00000) {
+document.getElementById("atVal07").innerHTML = "Potassiam: " + poValue.toFixed(5) + "%"; }
+document.getElementById("atVal08").innerHTML = "Methane: " + methValue.toFixed(5) + "%";
+if (neValue > 0.00000) {
+document.getElementById("atVal09").innerHTML = "Neon: " + neValue.toFixed(5) + "%"; }
+if (sValue > 0.00000) {
+document.getElementById("atVal10").innerHTML = "Sulfer: " + sValue.toFixed(5) + "%"; }
+if (saltValue > 0.00000) {
+document.getElementById("atVal11").innerHTML = "Sodium: " + saltValue.toFixed(5) + "%"; }
+</script>
+</body>
+</html>
